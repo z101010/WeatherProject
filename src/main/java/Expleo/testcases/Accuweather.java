@@ -17,13 +17,13 @@ import static org.junit.Assert.fail;
 
 
 public class Accuweather {
-        private WebDriver driver;
+        private static WebDriver driver;
         private String baseUrl;
-        private boolean acceptNextAlert = true;
+        private static boolean acceptNextAlert = true;
         private StringBuffer verificationErrors = new StringBuffer();
 
-        @Before
-        public void setUp() throws Exception {
+        @Test
+        public static AccuweatherPageObject AccuWeatherData() throws Exception {
             System.setProperty("webdriver.chrome.driver", "C:\\Drivers\\chromedriver.exe");
             driver = new ChromeDriver();
             driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
@@ -31,23 +31,51 @@ public class Accuweather {
             String expectedUrl = "https://www.accuweather.com/";
             driver.get(baseUrl);
             String actualUrl = driver.getCurrentUrl();
-            System.out.println("Website: " + actualUrl);
             Assert.assertEquals(actualUrl, expectedUrl);
             driver.manage().timeouts().implicitlyWait(30,TimeUnit.SECONDS);
-        }
 
-        @Test
-        public void Main() throws Exception {
             AccuweatherPageObject AccuweatherPage = PageFactory.initElements(driver, AccuweatherPageObject.class);
-            Actions builder = new Actions(driver);
 
+            //Commands to get through the different web pages.
             driver.findElement(By.xpath("/html/body/div/div[1]/div[2]/div[1]/form/input")).click();
             Thread.sleep(2000);
             driver.findElement(By.name("query")).sendKeys("East London");
-            Thread.sleep(2000);
-            builder.sendKeys(Keys.ENTER);
+            driver.findElement(By.name("query")).sendKeys(Keys.ENTER);
+            driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div[1]/div[1]/a[1]")).click();
+            driver.findElement(By.xpath("/html/body/div/div[4]/div/div/div[3]/a[4]/span")).click();
 
-    }
+            //Gets the Min & Max for Day 1
+            String ACCMaxDay1 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[1]/div[2]/span[1]")).getText();
+            AccuweatherPage.addMaxTemp(0, Integer.parseInt(ACCMaxDay1.substring(0,2)));
+            String ACCMinDay1 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[1]/div[2]/span[2]")).getText();
+            AccuweatherPage.addMinTemp(0, Integer.parseInt((ACCMinDay1.substring(2,4))));
+
+            //Gets the Min & Max for Day 2
+            String ACCMaxDay2 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[2]/div[2]/span[1]")).getText();
+            AccuweatherPage.addMaxTemp(1, Integer.parseInt(ACCMaxDay2.substring(0,2)));
+            String ACCMinDay2 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[2]/div[2]/span[2]")).getText();
+            AccuweatherPage.addMinTemp(1, Integer.parseInt(ACCMinDay2.substring(2,4)));
+
+            //Gets the Min & Max for Day 3
+            String ACCMaxDay3 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[3]/div[2]/span[1]")).getText();
+            AccuweatherPage.addMaxTemp(2, Integer.parseInt(ACCMaxDay3.substring(0,2)));
+            String ACCMinDay3 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[3]/div[2]/span[2]")).getText();
+            AccuweatherPage.addMinTemp(2, Integer.parseInt(ACCMinDay3.substring(2,4)));
+
+            //Gets the Min & Max for Day 4
+            String ACCMaxDay4 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[3]/a[1]/div[2]/span[1]")).getText();
+            AccuweatherPage.addMaxTemp(3, Integer.parseInt(ACCMaxDay4.substring(0,2)));
+            String ACCMinDay4 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[3]/a[1]/div[2]/span[2]")).getText();
+            AccuweatherPage.addMinTemp(3, Integer.parseInt(ACCMinDay4.substring(2,4)));
+
+            //Gets the Min & Max for Day 5
+            String ACCMaxDay5 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[3]/a[2]/div[2]/span[1]")).getText();
+            AccuweatherPage.addMaxTemp(4, Integer.parseInt(ACCMaxDay5.substring(0,2)));
+            String ACCMinDay5 = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[3]/a[2]/div[2]/span[2]")).getText();
+            AccuweatherPage.addMinTemp(4, Integer.parseInt(ACCMinDay5.substring(2,4)));
+
+            return AccuweatherPage;
+        }
 
     @After
     public void tearDown() throws Exception {
@@ -90,4 +118,6 @@ public class Accuweather {
             acceptNextAlert = true;
         }
     }
+
+
 }
